@@ -49,7 +49,7 @@ def private_panel(_, BOT_USERNAME, OWNER: Union[bool, int] = None):
                 )
         ],
         [
-                text="🥀 ᴅᴇᴠᴇʟᴏᴘᴇʀ 🥀 ", user_id=OWNER
+                text="🥀 ᴅᴇᴠᴇʟᴏᴘᴇʀ 🥀", user_id=OWNER
             )
         ],
      ]
