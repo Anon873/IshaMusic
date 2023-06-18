@@ -348,10 +348,6 @@ async def overall_stats(client, CallbackQuery, _):
     storage = call["storageSize"] / 1024
     objects = call["objects"]
     collections = call["collections"]
-    status = db.command("serverStatus")
-    query = status["opcounters"]["query"]
-    mongouptime = status["uptime"] / 86400
-    mongouptime = str(mongouptime)
     served_chats = len(await get_served_chats())
     served_users = len(await get_served_users())
     total_queries = await get_queries()
@@ -389,7 +385,6 @@ async def overall_stats(client, CallbackQuery, _):
 **sᴛᴏʀᴀɢᴇ:** {storage} Mb
 **ᴄᴏʟʟᴇᴄᴛɪᴏɴs:** {collections}
 **ᴋᴇʏs:** {objects}
-**ǫᴜᴇʀɪᴇs:** `{query}`
 **ʙᴏᴛ ǫᴜᴇʀɪᴇs:** `{total_queries} `
     """
     med = InputMediaPhoto(media=config.STATS_IMG_URL, caption=text)
