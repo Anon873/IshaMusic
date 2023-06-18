@@ -272,23 +272,34 @@ async def overall_stats(client, CallbackQuery, _):
     else:
         ass = "ɴᴏ"
     cm = config.CLEANMODE_DELETE_MINS
-    text = f"""**ʙᴏᴛ's sᴛᴀᴛs ᴀɴᴅ ɪɴғᴏ:**
+    text = f""" **Bot's Stats and Information:**
 
-**ᴍᴏᴅᴜʟᴇs:** {mod}
-**ᴄʜᴀᴛs:** {served_chats} 
-**ᴜsᴇʀs:** {served_users} 
-**ʙʟᴏᴄᴋᴇᴅ:** {blocked} 
-**sᴜᴅᴏᴇʀs:** {sudoers} 
-    
-**ǫᴜᴇʀɪᴇs:** {total_queries} 
-**ᴀssɪsᴛᴀɴᴛs:** {assistant}
-**ᴀss ᴀᴜᴛᴏ ʟᴇᴀᴠᴇ:** {ass}
-**ᴄʟᴇᴀɴᴍᴏᴅᴇ:** {cm} ᴍɪɴᴜᴛᴇs
+**Imported Modules:** {mod}
+**Platform:** {sc}
+**Ram:** {ram}
+**Physical Cores:** {p_core}
+**Total Cores:** {t_core}
+**Cpu Frequency:** {cpu_freq}
 
-**ᴅᴜʀᴀᴛɪᴏɴ ʟɪᴍɪᴛ:** {play_duration} ᴍɪɴᴜᴛᴇs
-**ᴅᴏᴡɴʟᴏᴀᴅ ʟɪᴍɪᴛ:** {song} ᴍɪɴᴜᴛᴇs
-**ᴩʟᴀʏʟɪsᴛ ʟɪᴍɪᴛ:** {playlist_limit}
-**ᴩʟᴀʏʟɪsᴛ ᴩʟᴀʏ ʟɪᴍɪᴛ:** {fetch_playlist}"""
+**Python Version :** {pyver.split()[0]}
+**Pyrogram Version :** {pyrover}
+**Py-TgCalls Version :** {pytgver}
+
+**Storage Avail:** {total[:4]} GiB
+**Storage Used:** {used[:4]} GiB
+**Storage Left:** {free[:4]} GiB
+
+**Served Chats:** {served_chats} 
+**Served Users:** {served_users} 
+**Blocked Users:** {blocked} 
+**Sudo Users:** {sudoers} 
+
+**Total DB Size:** {datasize[:6]} Mb
+**Total DB Storage:** {storage} Mb
+**Total DB Collections:** {collections}
+**Total DB Keys:** {objects}
+**Total Bot Queries:** `{total_queries} `
+    """
     med = InputMediaPhoto(media=config.STATS_IMG_URL, caption=text)
     try:
         await CallbackQuery.edit_message_media(
