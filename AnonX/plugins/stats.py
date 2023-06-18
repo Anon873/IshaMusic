@@ -180,7 +180,7 @@ async def top_users_ten(client, CallbackQuery: CallbackQuery, _):
                 details = stats.get(items)
                 title = (details["title"][:35]).title()
                 if items == "telegram":
-                    msg += f"🍒 [ᴛᴇʟᴇɢʀᴀᴍ ᴍᴇᴅɪᴀ](https://t.me/DevilsHeavenMF) ** ᴩʟᴀʏᴇᴅ {count} ᴛɪᴍᴇs**\n\n"
+                    msg += f"🍒 [ᴛᴇʟᴇɢʀᴀᴍ ᴍᴇᴅɪᴀ](https://t.me/+keh205KKhQw1MDll) ** ᴩʟᴀʏᴇᴅ {count} ᴛɪᴍᴇs**\n\n"
                 else:
                     msg += f"📌 [{title}](https://www.youtube.com/watch?v={items}) ** ᴩʟᴀʏᴇᴅ {count} ᴛɪᴍᴇs**\n\n"
 
@@ -272,6 +272,82 @@ async def overall_stats(client, CallbackQuery, _):
     else:
         ass = "ɴᴏ"
     cm = config.CLEANMODE_DELETE_MINS
+    text = f"""**ʙᴏᴛ's sᴛᴀᴛs ᴀɴᴅ ɪɴғᴏ:**
+
+**ᴍᴏᴅᴜʟᴇs:** {mod}
+**ᴄʜᴀᴛs:** || [Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ](https://t.me/+keh205KKhQw1MDll) ||
+**ᴜsᴇʀs:** {served_users} 
+**ʙʟᴏᴄᴋᴇᴅ:** {blocked} 
+**sᴜᴅᴏᴇʀs:** {sudoers} 
+    
+**ǫᴜᴇʀɪᴇs:** {total_queries} 
+**ᴀssɪsᴛᴀɴᴛs:** {assistant}
+**ᴀss ᴀᴜᴛᴏ ʟᴇᴀᴠᴇ:** {ass}
+**ᴄʟᴇᴀɴᴍᴏᴅᴇ:** {cm} ᴍɪɴᴜᴛᴇs"""
+    med = InputMediaPhoto(media=config.STATS_IMG_URL, caption=text)
+    try:
+        await CallbackQuery.edit_message_media(
+            media=med, reply_markup=upl
+        )
+    except MessageIdInvalid:
+        await CallbackQuery.message.reply_photo(
+            photo=config.STATS_IMG_URL, caption=text, reply_markup=upl
+        )
+
+
+@app.on_callback_query(filters.regex("bot_stats_sudo"))
+@languageCB
+async def overall_stats(client, CallbackQuery, _):
+    if CallbackQuery.from_user.id not in SUDOERS:
+        return await CallbackQuery.answer(
+            "Only for Sudo Users", show_alert=True
+        )
+    callback_data = CallbackQuery.data.strip()
+    what = callback_data.split(None, 1)[1]
+    if what != "s":
+        upl = overallback_stats_markup(_)
+    else:
+        upl = back_stats_buttons(_)
+    try:
+        await CallbackQuery.answer()
+    except:
+        pass
+    await CallbackQuery.edit_message_text(_["gstats_8"])
+    sc = platform.system()
+    p_core = psutil.cpu_count(logical=False)
+    t_core = psutil.cpu_count(logical=True)
+    ram = (
+        str(round(psutil.virtual_memory().total / (1024.0**3)))
+        + " GB"
+    )
+    try:
+        cpu_freq = psutil.cpu_freq().current
+        if cpu_freq >= 1000:
+            cpu_freq = f"{round(cpu_freq / 1000, 2)}GHz"
+        else:
+            cpu_freq = f"{round(cpu_freq, 2)}MHz"
+    except:
+        cpu_freq = "Unable to Fetch"
+    hdd = psutil.disk_usage("/")
+    total = hdd.total / (1024.0**3)
+    total = str(total)
+    used = hdd.used / (1024.0**3)
+    used = str(used)
+    free = hdd.free / (1024.0**3)
+    free = str(free)
+    mod = len(ALL_MODULES)
+    db = pymongodb
+    call = db.command("dbstats")
+    datasize = call["dataSize"] / 1024
+    datasize = str(datasize)
+    storage = call["storageSize"] / 1024
+    objects = call["objects"]
+    collections = call["collections"]
+    served_chats = len(await get_served_chats())
+    served_users = len(await get_served_users())
+    total_queries = await get_queries()
+    blocked = len(BANNED_USERS)
+    sudoers = len(await get_sudoers())
     text = f""" **Bot's Stats and Information:**
 
 **Imported Modules:** {mod}
@@ -309,105 +385,6 @@ async def overall_stats(client, CallbackQuery, _):
         await CallbackQuery.message.reply_photo(
             photo=config.STATS_IMG_URL, caption=text, reply_markup=upl
         )
-
-
-@app.on_callback_query(filters.regex("bot_stats_sudo"))
-@languageCB
-async def overall_stats(client, CallbackQuery, _):
-    if CallbackQuery.from_user.id not in SUDOERS:
-        return await CallbackQuery.answer(
-            "ᴏɴʟʏ ғᴏʀ sᴜᴅᴏ ᴜsᴇʀs.", show_alert=True
-        )
-    callback_data = CallbackQuery.data.strip()
-    what = callback_data.split(None, 1)[1]
-    if what != "s":
-        upl = overallback_stats_markup(_)
-    else:
-        upl = back_stats_buttons(_)
-    try:
-        await CallbackQuery.answer()
-    except:
-        pass
-    await CallbackQuery.edit_message_text(_["gstats_8"])
-    sc = platform.system()
-    p_core = psutil.cpu_count(logical=False)
-    t_core = psutil.cpu_count(logical=True)
-    ram = (
-        str(round(psutil.virtual_memory().total / (1024.0**3)))
-        + " ɢʙ"
-    )
-    try:
-        cpu_freq = psutil.cpu_freq().current
-        if cpu_freq >= 1000:
-            cpu_freq = f"{round(cpu_freq / 1000, 2)}ɢʜᴢ"
-        else:
-            cpu_freq = f"{round(cpu_freq, 2)}ᴍʜᴢ"
-    except:
-        cpu_freq = "Unable to Fetch"
-    hdd = psutil.disk_usage("/")
-    total = hdd.total / (1024.0**3)
-    total = str(total)
-    used = hdd.used / (1024.0**3)
-    used = str(used)
-    free = hdd.free / (1024.0**3)
-    free = str(free)
-    mod = len(ALL_MODULES)
-    db = pymongodb
-    call = db.command("dbstats")
-    datasize = call["dataSize"] / 1024
-    datasize = str(datasize)
-    storage = call["storageSize"] / 1024
-    objects = call["objects"]
-    collections = call["collections"]
-    served_chats = len(await get_served_chats())
-    served_users = len(await get_served_users())
-    total_queries = await get_queries()
-    blocked = len(BANNED_USERS)
-    sudoers = len(await get_sudoers())
-    text = f""" **ʙᴏᴛ's sᴛᴀᴛs ᴀɴᴅ ɪɴғᴏ:**
-
-       <b><u>ʜᴀʀᴅᴡᴀʀᴇ</b><u/>
-**ᴍᴏᴅᴜʟᴇs:** {mod}
-**ᴩʟᴀᴛғᴏʀᴍ:** {sc}
-**ʀᴀᴍ:** {ram}
-**ᴩʜʏsɪᴄᴀʟ ᴄᴏʀᴇs:** {p_core}
-**ᴛᴏᴛᴀʟ ᴄᴏʀᴇs:** {t_core}
-**ᴄᴩᴜ ғʀᴇǫᴜᴇɴᴄʏ:** {cpu_freq}
-
-       <b><u>sᴏғᴛᴡᴀʀᴇ</b><u/>
-**ᴩʏᴛʜᴏɴ :** {pyver.split()[0]}
-**ᴩʏʀᴏɢʀᴀᴍ :** {pyrover}
-**ᴩʏ-ᴛɢᴄᴀʟʟs :** {pytgver}
-
-        <b><u>sᴛᴏʀᴀɢᴇ</b><u/>
-**ᴀᴠᴀɪʟᴀʙʟᴇ:** {total[:4]} GiB
-**ᴜsᴇᴅ:** {used[:4]} GiB
-**ғʀᴇᴇ:** {free[:4]} GiB
-        
-      <b><u>ᴄᴜʀʀᴇɴᴛ sᴛᴀᴛs</b><u/>
-**ᴄʜᴀᴛs:** {served_chats} 
-**ᴜsᴇʀs:** {served_users} 
-**ʙʟᴏᴄᴋᴇᴅ:** {blocked} 
-**sᴜᴅᴏᴇʀs:** {sudoers} 
-
-      <b><u>ᴍᴏɴɢᴏ ᴅᴀᴛᴀʙᴀsᴇ</b><u/>
-**ᴜᴩᴛɪᴍᴇ:** {mongouptime[:4]} Days
-**sɪᴢᴇ:** {datasize[:6]} Mb
-**sᴛᴏʀᴀɢᴇ:** {storage} Mb
-**ᴄᴏʟʟᴇᴄᴛɪᴏɴs:** {collections}
-**ᴋᴇʏs:** {objects}
-**ʙᴏᴛ ǫᴜᴇʀɪᴇs:** `{total_queries} `
-    """
-    med = InputMediaPhoto(media=config.STATS_IMG_URL, caption=text)
-    try:
-        await CallbackQuery.edit_message_media(
-            media=med, reply_markup=upl
-        )
-    except MessageIdInvalid:
-        await CallbackQuery.message.reply_photo(
-            photo=config.STATS_IMG_URL, caption=text, reply_markup=upl
-        )
-
 
 @app.on_callback_query(
     filters.regex(pattern=r"^(TOPMARKUPGET|GETSTATS|GlobalStats)$")
